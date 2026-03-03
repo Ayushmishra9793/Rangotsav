@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rangotsav – The Festival of Colors 🎨</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Tiro+Devanagari+Hindi&family=Poppins:wght@300;400;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink: #ff2e63;
+      --yellow: #f9ed69;
+      --blue: #00bbf9;
+      --purple: #9d4edd;
+      --green: #38b000;
+      --orange: #fb5607;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0a0a0a;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ── */
+    #custom-cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff2e63, #f9ed69);
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s;
+      mix-blend-mode: difference;
+    }
+
+    /* ── Cursor Splash Particle ── */
+    .cursor-particle {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      animation: cursorSplash 0.8s ease-out forwards;
+    }
+    @keyframes cursorSplash {
+      0%   { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+    }
+
+    /* ── Floating Particles ── */
+    .particle {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatUp linear infinite;
+      opacity: 0.6;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Nav ── */
+    #navbar {
+      position: fixed; top: 0; width: 100%;
+      z-index: 1000;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    #navbar.scrolled {
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0033 0%, #2d0050 20%, #1a0a00 40%, #001a33 60%, #0d0033 80%, #1a0020 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-bg-anim {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(255,46,99,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(157,78,221,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 60% 80%, rgba(0,187,249,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at 40% 40%, rgba(249,237,105,0.15) 0%, transparent 50%);
+      animation: heroBgShift 8s ease-in-out infinite alternate;
+    }
+    @keyframes heroBgShift {
+      0%   { filter: hue-rotate(0deg) brightness(1); }
+      100% { filter: hue-rotate(30deg) brightness(1.2); }
+    }
+    .hero-title {
+      font-family: 'Yatra One', cursive;
+      font-size: clamp(2.5rem, 8vw, 7rem);
+      line-height: 1.1;
+      background: linear-gradient(90deg, #ff2e63, #f9ed69, #00bbf9, #9d4edd, #38b000, #ff2e63);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s linear infinite;
+      text-shadow: none;
+      filter: drop-shadow(0 0 30px rgba(255,46,99,0.5));
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0%; }
+      100% { background-position: 300%; }
+    }
+    .hero-shayari {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      color: rgba(255,255,255,0.85);
+      text-shadow: 0 0 20px rgba(249,237,105,0.5);
+    }
+
+    /* ── Color Burst on CTA ── */
+    .color-burst {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      display: none;
+    }
+    .burst-circle {
+      position: absolute;
+      border-radius: 50%;
+      animation: burstExpand 1s ease-out forwards;
+      transform-origin: center;
+    }
+    @keyframes burstExpand {
+      0%   { transform: scale(0); opacity: 0.9; }
+      100% { transform: scale(30); opacity: 0; }
+    }
+
+    /* ── Section Headings ── */
+    .section-heading {
+      font-family: 'Yatra One', cursive;
+      background: linear-gradient(90deg, var(--pink), var(--yellow), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Glassmorphism Card ── */
+    .glass-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .glass-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 20px 60px rgba(255,46,99,0.3);
+    }
+
+    /* ── Flame Animation ── */
+    .flame {
+      display: inline-block;
+      animation: flameFlicker 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes flameFlicker {
+      0%   { transform: scaleY(1) scaleX(1) rotate(-2deg); filter: hue-rotate(0deg); }
+      50%  { transform: scaleY(1.15) scaleX(0.95) rotate(2deg); }
+      100% { transform: scaleY(0.9) scaleX(1.05) rotate(-1deg); filter: hue-rotate(20deg); }
+    }
+
+    /* ── Timeline ── */
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -30px; top: 6px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--orange));
+      box-shadow: 0 0 12px var(--orange);
+    }
+    .timeline-line {
+      position: absolute;
+      left: -23px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--orange), var(--pink), var(--purple));
+    }
+
+    /* ── Countdown ── */
+    .countdown-ring {
+      transform: rotate(-90deg);
+    }
+    .countdown-ring circle {
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    /* ── Balloon Game ── */
+    .balloon {
+      position: absolute;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      cursor: pointer;
+      animation: balloonFloat linear infinite;
+      user-select: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      transition: transform 0.1s;
+      box-shadow: inset -4px -4px 10px rgba(0,0,0,0.3), inset 4px 4px 10px rgba(255,255,255,0.3);
+    }
+    .balloon:hover { transform: scale(1.1); }
+    @keyframes balloonFloat {
+      0%   { bottom: -100px; }
+      100% { bottom: 110%; }
+    }
+    .balloon-pop {
+      position: absolute;
+      pointer-events: none;
+      animation: popBurst 0.5s ease-out forwards;
+      font-size: 2rem;
+    }
+    @keyframes popBurst {
+      0%   { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* ── Color Wheel ── */
+    #colorWheel {
+      transition: transform 0.05s;
+    }
+    @keyframes spinWheel {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(var(--spin-deg)); }
+    }
+
+    /* ── Confetti ── */
+    .confetti-piece {
+      position: fixed;
+      width: 10px; height: 10px;
+      pointer-events: none;
+      z-index: 9500;
+      animation: confettiFall var(--fall-duration) linear forwards;
+      border-radius: var(--border-r);
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg) translateX(var(--drift)); opacity: 0; }
+    }
+
+    /* ── Fade In Sections ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Pulse Button ── */
+    .pulse-btn {
+      animation: pulseBorder 2s ease-in-out infinite;
+    }
+    @keyframes pulseBorder {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,46,99,0.5), 0 0 30px rgba(255,46,99,0.3); }
+      50%       { box-shadow: 0 0 0 20px rgba(255,46,99,0), 0 0 60px rgba(255,46,99,0.5); }
+    }
+
+    /* ── Gradient animated bg sections ── */
+    .gradient-bg-anim {
+      background: linear-gradient(270deg, #1a0033, #001a33, #0d1a00, #330022);
+      background-size: 400% 400%;
+      animation: gradBgMove 12s ease infinite;
+    }
+    @keyframes gradBgMove {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── Masonry Gallery ── */
+    .masonry { column-count: 3; column-gap: 12px; }
+    @media (max-width: 768px) { .masonry { column-count: 2; } }
+    @media (max-width: 480px) { .masonry { column-count: 1; } }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .masonry-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 40px rgba(255,46,99,0.4);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(var(--pink), var(--purple)); border-radius: 3px; }
+
+    /* ── bounce ── */
+    .bounce-hover:hover { animation: bounce 0.5s ease; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      40%       { transform: translateY(-12px); }
+      70%       { transform: translateY(-6px); }
+    }
+
+    /* ── Color Splash on click ── */
+    .splash-dot {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99990;
+      animation: splashAnim 0.6s ease-out forwards;
+    }
+    @keyframes splashAnim {
+      0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(4); opacity: 0; }
+    }
+
+    /* ── Wish section ── */
+    #wishBg { transition: background 0.8s ease; }
+
+    /* ── Game tabs ── */
+    .game-tab { transition: all 0.3s; }
+    .game-tab.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    /* Typing effect */
+    .typewriter::after {
+      content: '|';
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Responsive nav menu ── */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     CUSTOM CURSOR
+══════════════════════════════════════════ -->
+<div id="custom-cursor"></div>
+
+<!-- ══════════════════════════════════════════
+     FLOATING BACKGROUND PARTICLES
+══════════════════════════════════════════ -->
+<div id="particles-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+<!-- ══════════════════════════════════════════
+     COLOR BURST OVERLAY
+══════════════════════════════════════════ -->
+<div class="color-burst" id="colorBurst"></div>
+
+<!-- ══════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════ -->
+<nav id="navbar" class="py-3 px-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🎨</span>
+      <span style="font-family:'Yatra One',cursive" class="text-xl bg-gradient-to-r from-pink-400 via-yellow-300 to-cyan-400 bg-clip-text text-transparent">Rangotsav</span>
+    </div>
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">
+      <a href="#about" class="hover:text-yellow-300 transition-colors">About</a>
+      <a href="#facts" class="hover:text-pink-400 transition-colors">Fun Facts</a>
+      <a href="#holika" class="hover:text-orange-400 transition-colors">Holika Story</a>
+      <a href="#herbal" class="hover:text-green-400 transition-colors">Herbal Colors</a>
+      <a href="#types" class="hover:text-blue-400 transition-colors">Types</a>
+      <a href="#countdown" class="hover:text-purple-400 transition-colors">Countdown</a>
+      <a href="#games" class="hover:text-yellow-300 transition-colors">Games</a>
+      <a href="#wish" class="hover:text-pink-400 transition-colors">Wish</a>
+    </div>
+    <!-- Mobile Menu Button -->
+    <button id="menuBtn" class="md:hidden text-white text-2xl">☰</button>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="flex-col gap-3 px-4 pb-4 pt-2 text-white/80 text-sm font-medium border-t border-white/10 mt-2">
+    <a href="#about" onclick="closeMobileMenu()">About Holi</a>
+    <a href="#facts" onclick="closeMobileMenu()">Fun Facts</a>
+    <a href="#holika" onclick="closeMobileMenu()">Holika Story</a>
+    <a href="#herbal" onclick="closeMobileMenu()">Herbal Colors</a>
+    <a href="#types" onclick="closeMobileMenu()">Types of Holi</a>
+    <a href="#countdown" onclick="closeMobileMenu()">Countdown</a>
+    <a href="#games" onclick="closeMobileMenu()">Games 🎮</a>
+    <a href="#wish" onclick="closeMobileMenu()">Wish 🎊</a>
+    <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     1. HERO SECTION
+══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-anim"></div>
+
+  <!-- Animated color blobs -->
+  <div class="absolute w-96 h-96 rounded-full opacity-20 blur-3xl" style="background:var(--pink);top:10%;left:5%;animation:floatBlob 7s ease-in-out infinite;"></div>
+  <div class="absolute w-80 h-80 rounded-full opacity-20 blur-3xl" style="background:var(--blue);top:50%;right:5%;animation:floatBlob 9s ease-in-out infinite reverse;"></div>
+  <div class="absolute w-64 h-64 rounded-full opacity-20 blur-3xl" style="background:var(--yellow);bottom:10%;left:30%;animation:floatBlob 11s ease-in-out infinite;"></div>
+
+  <style>
+    @keyframes floatBlob {
+      0%,100%{transform:translate(0,0) scale(1);}
+      33%{transform:translate(30px,-20px) scale(1.1);}
+      66%{transform:translate(-20px,15px) scale(0.95);}
+    }
+  </style>
+
+  <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+    <!-- Hindi shayari -->
+    <p class="hero-shayari mb-6 px-4">
+      "Rangon se bhara ho aangan tumhara,<br>
+      Khushiyon se saja ho sansar tumhara…<br>
+      <span class="text-yellow-300">Holi ki dhoom machaye duniya saari,</span><br>
+      Pyaar ke rang se sajao zindagi tumhari 🌸"
+    </p>
+
+    <!-- Main Title -->
+    <h1 class="hero-title mb-4">रंगोत्सव</h1>
+    <h2 style="font-family:'Yatra One',cursive" class="text-3xl md:text-5xl text-white/90 mb-2">Rangotsav</h2>
+    <p class="text-lg md:text-2xl text-white/60 mb-10 font-light tracking-widest uppercase">The Festival of Colors</p>
+
+    <!-- CTA Button -->
+    <button id="celebrateBtn" onclick="triggerColorBurst(event)" class="pulse-btn relative px-10 py-5 rounded-full text-white font-bold text-lg md:text-xl transition-all duration-300 hover:scale-110 active:scale-95"
+      style="background:linear-gradient(135deg, var(--pink), var(--purple), var(--blue)); box-shadow: 0 0 40px rgba(255,46,99,0.5);">
+      🎉 Celebrate Holi
+    </button>
+
+    <!-- Scroll indicator -->
+    <div class="mt-16 flex flex-col items-center gap-2 text-white/40">
+      <span class="text-xs tracking-widest">SCROLL TO EXPLORE</span>
+      <div class="w-0.5 h-10 bg-gradient-to-b from-white/40 to-transparent animate-pulse"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     2. ABOUT HOLI (Spiritual Meaning)
+══════════════════════════════════════════ -->
+<section id="about" class="py-24 px-4 relative gradient-bg-anim">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">About Holi</h2>
+      <p class="text-white/60 max-w-2xl mx-auto text-lg">The divine festival of colors — where love, devotion, and the triumph of good over evil come alive</p>
+    </div>
+
+    <!-- Spiritual significance intro -->
+    <div class="glass-card p-8 md:p-12 mb-12 fade-in">
+      <div class="flex flex-col md:flex-row items-center gap-8">
+        <div class="text-8xl">🕉️</div>
+        <div>
+          <h3 class="text-2xl font-bold text-yellow-300 mb-4" style="font-family:'Yatra One',cursive">Spiritual Significance</h3>
+          <p class="text-white/80 leading-relaxed text-lg">Holi is not merely a festival of colors — it is a sacred celebration of the eternal victory of Dharma over Adharma, light over darkness, and love over hatred. Celebrated on the full moon day (Purnima) of the Hindu month Phalguna, it marks the end of winter and the joyous arrival of spring, symbolizing renewal, fertility, and life itself.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mythology Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- Prahlada Card -->
+      <div class="glass-card p-6 fade-in" style="border-top: 3px solid var(--yellow);">
+        <div class="text-5xl mb-4">🙏</div>
+        <h3 class="text-xl font-bold text-yellow-300 mb-3" style="font-family:'Yatra One',cursive">Prahlada — The Devotee</h3>
+        <p class="text-white/70 leading-relaxed">Prahlada, the son of demon king Hiranyakashipu, was an unwavering devotee of Lord Vishnu. Despite his father's tyranny and numerous attempts on his life, Prahlada's devotion never wavered. His story teaches us that true faith is unbreakable — no fire, water, or poison can harm the pure of heart.</p>
+        <div class="mt-4 flex gap-2 flex-wrap">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(249,237,105,0.2);color:var(--yellow);">Devotion</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(249,237,105,0.2);color:var(--yellow);">Faith</span>
+        </div>
+      </div>
+
+      <!-- Hiranyakashipu Card -->
+      <div class="glass-card p-6 fade-in" style="border-top: 3px solid var(--pink);">
+        <div class="text-5xl mb-4">👹</div>
+        <h3 class="text-xl font-bold text-pink-400 mb-3" style="font-family:'Yatra One',cursive">Hiranyakashipu — The Tyrant</h3>
+        <p class="text-white/70 leading-relaxed">The demon king Hiranyakashipu, intoxicated by his boon of near-invincibility, declared himself god and forbade worship of Vishnu. His hatred for his own son Prahlada's devotion led him to attempt murder repeatedly. Yet every attempt failed — proving that divine love protects its own.</p>
+        <div class="mt-4 flex gap-2 flex-wrap">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(255,46,99,0.2);color:var(--pink);">Ego</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(255,46,99,0.2);color:var(--pink);">Adharma</span>
+        </div>
+      </div>
+
+      <!-- Good over Evil Card -->
+      <div class="glass-card p-6 fade-in" style="border-top: 3px solid var(--green);">
+        <div class="text-5xl mb-4">✨</div>
+        <h3 class="text-xl font-bold mb-3" style="color:var(--green);font-family:'Yatra One',cursive">Good Over Evil</h3>
+        <p class="text-white/70 leading-relaxed">The burning of Holika on the eve of Holi — Holika Dahan — symbolizes the destruction of evil forces. As Holika burned yet Prahlada emerged unscathed, the bonfire reminds us that negativity, ego, and darkness are ultimately consumed, while truth and love prevail eternally.</p>
+        <div class="mt-4 flex gap-2 flex-wrap">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(56,176,0,0.2);color:var(--green);">Truth</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:rgba(56,176,0,0.2);color:var(--green);">Victory</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colors meaning grid -->
+    <h3 class="text-center text-2xl font-bold text-white/80 mb-8 fade-in" style="font-family:'Yatra One',cursive">🎨 Meaning of Holi Colors</h3>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 fade-in">
+      <div class="glass-card p-4 text-center bounce-hover cursor-pointer">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3" style="background:var(--pink);box-shadow:0 0 20px var(--pink)"></div>
+        <p class="text-white font-semibold text-sm">Pink</p>
+        <p class="text-white/50 text-xs mt-1">Love & Compassion</p>
+      </div>
+      <div class="glass-card p-4 text-center bounce-hover cursor-pointer">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3" style="background:var(--yellow);box-shadow:0 0 20px var(--yellow)"></div>
+        <p class="text-white font-semibold text-sm">Yellow</p>
+        <p class="text-white/50 text-xs mt-1">Knowledge & Wisdom</p>
+      </div>
+      <div class="glass-card p-4 text-center bounce-hover cursor-pointer">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3" style="background:var(--blue);box-shadow:0 0 20px var(--blue)"></div>
+        <p class="text-white font-semibold text-sm">Blue</p>
+        <p class="text-white/50 text-xs mt-1">Vastness & Truth</p>
+      </div>
+      <div class="glass-card p-4 text-center bounce-hover cursor-pointer">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3" style="background:var(--green);box-shadow:0 0 20px var(--green)"></div>
+        <p class="text-white font-semibold text-sm">Green</p>
+        <p class="text-white/50 text-xs mt-1">Life & New Beginnings</p>
+      </div>
+      <div class="glass-card p-4 text-center bounce-hover cursor-pointer">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3" style="background:var(--purple);box-shadow:0 0 20px var(--purple)"></div>
+        <p class="text-white font-semibold text-sm">Purple</p>
+        <p class="text-white/50 text-xs mt-1">Magic & Mystery</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     3. FUN FACTS
+══════════════════════════════════════════ -->
+<section id="facts" class="py-24 px-4 relative" style="background:linear-gradient(180deg,#0a0020,#001020,#0a0020);">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">Fun Facts 🎊</h2>
+      <p class="text-white/60 text-lg">Things you probably didn't know about Holi!</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Fact Cards -->
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(255,46,99,0.3);">
+        <div class="text-5xl mb-4">🌍</div>
+        <h4 class="font-bold text-pink-400 text-lg mb-2">Global Festival</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Holi is celebrated not just in India & Nepal but across 80+ countries, including USA, UK, Canada, Australia, and Mauritius!</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(249,237,105,0.3);">
+        <div class="text-5xl mb-4">🌸</div>
+        <h4 class="font-bold text-yellow-300 text-lg mb-2">Spring Festival</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Holi marks the end of winter and celebrates the arrival of spring — the season of bloom, growth, love, and new beginnings.</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(0,187,249,0.3);">
+        <div class="text-5xl mb-4">💕</div>
+        <h4 class="font-bold text-cyan-400 text-lg mb-2">Festival of Love</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Legend says Lord Krishna started Holi by playfully applying colors on Radha's face — making it the eternal festival of love and togetherness.</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(157,78,221,0.3);">
+        <div class="text-5xl mb-4">📜</div>
+        <h4 class="font-bold text-purple-400 text-lg mb-2">Ancient Roots</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Holi has been celebrated for over 2,000 years. References appear in Puranas, Dasakumara Charita, and even in ancient Indian paintings.</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(56,176,0,0.3);">
+        <div class="text-5xl mb-4">🌿</div>
+        <h4 class="font-bold mb-2" style="color:var(--green);">Herbal Origins</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Originally, Holi colors were made only from natural sources — flowers like Tesu (Palash), turmeric, neem, and sandalwood. They were medicinal!</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(251,86,7,0.3);">
+        <div class="text-5xl mb-4">🔥</div>
+        <h4 class="font-bold text-orange-400 text-lg mb-2">Holika Dahan</h4>
+        <p class="text-white/70 text-sm leading-relaxed">The night before Holi, bonfires called "Holika Dahan" are lit. People circle the fire 7 times, burning away negativity and seeking blessings for prosperity.</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(255,46,99,0.3);">
+        <div class="text-5xl mb-4">🤝</div>
+        <h4 class="font-bold text-pink-400 text-lg mb-2">Social Equality</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Holi breaks all social barriers — during this festival, all castes, classes, and ages play together. Colors make everyone equal!</p>
+      </div>
+      <div class="glass-card p-6 text-center bounce-hover cursor-pointer fade-in" style="border:1px solid rgba(249,237,105,0.3);">
+        <div class="text-5xl mb-4">🌙</div>
+        <h4 class="font-bold text-yellow-300 text-lg mb-2">Full Moon Magic</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Holi is always celebrated on the full moon of Phalguna (Feb–March), aligning with lunar cycles. The full moon symbolizes completion and abundance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     4. STORY OF HOLIKA DAHAN (Timeline)
+══════════════════════════════════════════ -->
+<section id="holika" class="py-24 px-4 relative" style="background:linear-gradient(180deg,#1a0a00,#200500,#1a0a00);">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16 fade-in">
+      <div class="flame text-7xl mb-4">🔥</div>
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">Story of Holika Dahan</h2>
+      <p class="text-white/60 text-lg">The mythological tale that gave birth to this sacred festival</p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="relative pl-10 fade-in">
+      <div class="timeline-line"></div>
+
+      <!-- Event 1 -->
+      <div class="timeline-item relative mb-12">
+        <div class="glass-card p-6" style="border-left:3px solid var(--orange);">
+          <div class="flex items-start gap-4">
+            <span class="text-4xl">👹</span>
+            <div>
+              <h4 class="text-xl font-bold text-orange-400 mb-2" style="font-family:'Yatra One',cursive">The Rise of Hiranyakashipu</h4>
+              <p class="text-white/75 leading-relaxed">The mighty demon king Hiranyakashipu performed intense penance and received a boon from Brahma: he could not be killed by man or beast, during day or night, inside or outside, on land or in air, by any weapon. Drunk with power, he declared himself supreme god and commanded all to worship him.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event 2 -->
+      <div class="timeline-item relative mb-12">
+        <div class="glass-card p-6" style="border-left:3px solid var(--yellow);">
+          <div class="flex items-start gap-4">
+            <span class="text-4xl">🙏</span>
+            <div>
+              <h4 class="text-xl font-bold text-yellow-300 mb-2" style="font-family:'Yatra One',cursive">Prahlada's Unwavering Devotion</h4>
+              <p class="text-white/75 leading-relaxed">Yet Hiranyakashipu's own son, little Prahlada, refused to worship anyone but Lord Vishnu. Despite being tortured repeatedly — thrown off cliffs, trampled by elephants, attacked by serpents, given poison — Prahlada survived every trial. He would simply chant "Jai Shri Hari" and emerge unharmed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event 3 -->
+      <div class="timeline-item relative mb-12">
+        <div class="glass-card p-6" style="border-left:3px solid var(--pink);">
+          <div class="flex items-start gap-4">
+            <span class="text-4xl">🧙‍♀️</span>
+            <div>
+              <h4 class="text-xl font-bold text-pink-400 mb-2" style="font-family:'Yatra One',cursive">Holika's Treacherous Plan</h4>
+              <p class="text-white/75 leading-relaxed">Hiranyakashipu's sister Holika possessed a divine shawl (boon) that made her immune to fire. Together they devised a diabolical plan — Holika would sit in a roaring bonfire with little Prahlada on her lap, and he would burn while she remained protected by her magical shawl.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event 4 -->
+      <div class="timeline-item relative mb-12">
+        <div class="glass-card p-6" style="border-left:3px solid var(--purple);">
+          <div class="flex items-start gap-4">
+            <span class="flame text-4xl">🔥</span>
+            <div>
+              <h4 class="text-xl font-bold text-purple-400 mb-2" style="font-family:'Yatra One',cursive">The Divine Miracle</h4>
+              <p class="text-white/75 leading-relaxed">As the fire blazed, something miraculous happened! The divine shawl — which was only meant to protect the pure of heart — flew off Holika and wrapped itself around innocent Prahlada. Holika, who misused her boon for evil purposes, was consumed by the very fire she thought would protect her. Prahlada walked out completely unharmed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event 5 -->
+      <div class="timeline-item relative">
+        <div class="glass-card p-6" style="border-left:3px solid var(--green);background:rgba(56,176,0,0.1);">
+          <div class="flex items-start gap-4">
+            <span class="text-4xl">✨</span>
+            <div>
+              <h4 class="text-xl font-bold mb-2" style="color:var(--green);font-family:'Yatra One',cursive">Victory! Celebration Begins</h4>
+              <p class="text-white/75 leading-relaxed">The people celebrated with great joy — singing, dancing, and throwing colors. Lord Vishnu, pleased with Prahlada's devotion, later appeared as Narasimha and slew Hiranyakashipu. Since then, every year on this day, communities light the Holika Dahan bonfire, circling it 7 times, burning their old grudges and negativity — and the next morning, they play Holi!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     5. HERBAL COLORS GUIDE 🌿
+══════════════════════════════════════════ -->
+<section id="herbal" class="py-24 px-4 gradient-bg-anim">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">🌿 Herbal Colors Guide</h2>
+      <p class="text-white/60 text-lg max-w-2xl mx-auto">Make eco-friendly, skin-safe colors at home from nature's kitchen. Safe for children, good for skin, and great for the planet!</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Yellow - Turmeric -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#7a5c00,#c8900a);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--yellow)"></div>
+          🌾
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--yellow);box-shadow:0 0 10px var(--yellow)"></div>
+            <h3 class="text-xl font-bold text-yellow-300" style="font-family:'Yatra One',cursive">Yellow — Turmeric</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Turmeric (Haldi) creates a beautiful golden-yellow color. It's antiseptic, anti-inflammatory, and glows beautifully in sunlight.</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-yellow-400">▶</span> Mix 2 tbsp turmeric powder in 4 cups water</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-yellow-400">▶</span> Or mix with chickpea flour for dry gulal</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-yellow-400">▶</span> Boil marigold flowers for deeper golden hue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pink - Beetroot -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#4a0020,#8b003a);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--pink)"></div>
+          🫐
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--pink);box-shadow:0 0 10px var(--pink)"></div>
+            <h3 class="text-xl font-bold text-pink-400" style="font-family:'Yatra One',cursive">Pink — Beetroot</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Beetroot yields a vibrant magenta-pink color, rich in antioxidants. It actually nourishes the skin with vitamins!</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-pink-400">▶</span> Boil 3–4 beets in water, strain and cool</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-pink-400">▶</span> Blend dried roses + cornflour for dry pink</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-pink-400">▶</span> Add hibiscus flowers for even richer shade</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Green - Spinach -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#003a00,#005c00);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--green)"></div>
+          🌿
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--green);box-shadow:0 0 10px var(--green)"></div>
+            <h3 class="text-xl font-bold mb-2" style="color:var(--green);font-family:'Yatra One',cursive">Green — Spinach & Neem</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Fresh spinach or neem leaves make a lush green color. Neem is naturally antibacterial — good for skin during color play!</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span style="color:var(--green)">▶</span> Blend spinach leaves with a little water</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span style="color:var(--green)">▶</span> Mix neem powder with cornflour for dry green</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span style="color:var(--green)">▶</span> Henna leaves also give earthy green shades</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blue - Indigo -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#001040,#002080);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--blue)"></div>
+          💙
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--blue);box-shadow:0 0 10px var(--blue)"></div>
+            <h3 class="text-xl font-bold text-cyan-400" style="font-family:'Yatra One',cursive">Blue — Indigo & Jacaranda</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Blue from indigo plants has been used for centuries in India. It's a deep, rich color with cooling properties.</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-cyan-400">▶</span> Soak indigo powder in water overnight</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-cyan-400">▶</span> Blend blue berries + strain for liquid color</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-cyan-400">▶</span> Jacaranda flowers create a subtle lavender-blue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orange - Tesu Flowers -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#4a1500,#8b2a00);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--orange)"></div>
+          🌺
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--orange);box-shadow:0 0 10px var(--orange)"></div>
+            <h3 class="text-xl font-bold text-orange-400" style="font-family:'Yatra One',cursive">Orange — Palash / Tesu</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Tesu flowers (Flame of the Forest) are the most traditional Holi color source. Their deep orange-red hue is used in Ayurvedic medicine too.</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-orange-400">▶</span> Soak Tesu flowers in water for 8–12 hours</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-orange-400">▶</span> Boil for deeper color, strain and use</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-orange-400">▶</span> Mix with sandalwood for skin benefits</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purple - Grapes -->
+      <div class="glass-card overflow-hidden fade-in group">
+        <div class="h-40 flex items-center justify-center text-7xl relative overflow-hidden" style="background:linear-gradient(135deg,#1a0033,#2d0050);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:var(--purple)"></div>
+          🍇
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full" style="background:var(--purple);box-shadow:0 0 10px var(--purple)"></div>
+            <h3 class="text-xl font-bold text-purple-400" style="font-family:'Yatra One',cursive">Purple — Grapes & Lavender</h3>
+          </div>
+          <p class="text-white/70 text-sm leading-relaxed mb-4">Dark grapes and lavender flowers create a beautiful violet-purple. It's rich in polyphenols which are actually beneficial for skin!</p>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-purple-400">▶</span> Boil dark grapes + strain the liquid</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-purple-400">▶</span> Mix lavender petals with rice flour for dry</div>
+            <div class="flex items-start gap-2 text-sm text-white/60"><span class="text-purple-400">▶</span> Combine with beetroot for magenta-purple</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 glass-card p-6 text-center fade-in" style="border:1px solid rgba(56,176,0,0.4);">
+      <p class="text-lg font-semibold mb-2" style="color:var(--green);">🌱 Pro Tip: Skin Protection Before Holi!</p>
+      <p class="text-white/70">Apply coconut oil or mustard oil all over your body and hair before playing. This creates a natural barrier that makes color removal much easier and protects your skin from any irritants.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     6. TYPES OF HOLI CELEBRATIONS
+══════════════════════════════════════════ -->
+<section id="types" class="py-24 px-4" style="background:linear-gradient(180deg,#0a0020,#001a10,#0a0020);">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">Types of Holi 🎉</h2>
+      <p class="text-white/60 text-lg">India is vast and diverse — and so are its ways of celebrating Holi!</p>
+    </div>
+
+    <!-- Main 4 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div class="glass-card p-8 fade-in group hover:border-yellow-400/40 transition-all" style="border:1px solid rgba(249,237,105,0.2);">
+        <div class="flex items-start gap-4">
+          <div class="text-5xl group-hover:animate-bounce">🎉</div>
+          <div>
+            <h3 class="text-2xl font-bold text-yellow-300 mb-3" style="font-family:'Yatra One',cursive">Varanasi Holi</h3>
+            <p class="text-white/70 leading-relaxed">The spiritual capital of India celebrates Holi with unmatched divine fervour. The ghats of Varanasi come alive with colors, classical music, and thousands of devotees. Smashana Holi — played at the cremation ghats — is unique to Banaras, where Lord Shiva's devotees celebrate life amidst ashes.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(249,237,105,0.15);color:var(--yellow);">Spiritual</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(249,237,105,0.15);color:var(--yellow);">Unique</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 fade-in group hover:border-pink-400/40 transition-all" style="border:1px solid rgba(255,46,99,0.2);">
+        <div class="flex items-start gap-4">
+          <div class="text-5xl group-hover:animate-bounce">🌸</div>
+          <div>
+            <h3 class="text-2xl font-bold text-pink-400 mb-3" style="font-family:'Yatra One',cursive">Braj Holi</h3>
+            <p class="text-white/70 leading-relaxed">The Braj region — birthplace of Lord Krishna — celebrates Holi for an entire week! The celebrations in Vrindavan, Govardhan, and Nandgaon are legendary. The air is thick with the fragrance of gulal as devotees dance to folk songs called "Hori" in the spirit of Radha-Krishna's divine love.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(255,46,99,0.15);color:var(--pink);">Krishna Bhumi</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(255,46,99,0.15);color:var(--pink);">Week-long</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 fade-in group hover:border-blue-400/40 transition-all" style="border:1px solid rgba(0,187,249,0.2);">
+        <div class="flex items-start gap-4">
+          <div class="text-5xl group-hover:animate-bounce">🪵</div>
+          <div>
+            <h3 class="text-2xl font-bold text-cyan-400 mb-3" style="font-family:'Yatra One',cursive">Mathura Holi</h3>
+            <p class="text-white/70 leading-relaxed">Mathura — Lord Krishna's birthplace — celebrates Holi with grand processions, royal fanfare, and the famous "Holi Milan" ceremony. Temples open their doors and rain down flowers and colors. The Dwarkadheesh temple celebration draws lakhs of devotees every year in a riot of colors and devotion.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(0,187,249,0.15);color:var(--blue);">Grand Processions</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(0,187,249,0.15);color:var(--blue);">Temple Festival</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 fade-in group hover:border-orange-400/40 transition-all" style="border:1px solid rgba(251,86,7,0.2);">
+        <div class="flex items-start gap-4">
+          <div class="text-5xl group-hover:animate-bounce">🌺</div>
+          <div>
+            <h3 class="text-2xl font-bold text-orange-400 mb-3" style="font-family:'Yatra One',cursive">Barsana Holi</h3>
+            <p class="text-white/70 leading-relaxed">Barsana — the village of Radha — is famous for the spectacular "Lathmar Holi", where women beat men with long decorated sticks (lathis), while men try to shield themselves with shields. This playful role-reversal dates back to Krishna's visits to Radha's village. It's joyous, theatrical, and uniquely exhilarating!</p>
+            <div class="mt-4 flex gap-2">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(251,86,7,0.15);color:var(--orange);">Lathmar</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(251,86,7,0.15);color:var(--orange);">Radha's Village</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Special types -->
+    <h3 class="text-center text-2xl font-bold text-white/80 mb-8 fade-in" style="font-family:'Yatra One',cursive">🌟 Special Holi Traditions</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in">
+      <div class="glass-card p-6" style="border-top:3px solid var(--pink);">
+        <div class="text-4xl mb-3">🪵</div>
+        <h4 class="font-bold text-pink-400 text-lg mb-2">Lathmar Holi</h4>
+        <p class="text-white/70 text-sm leading-relaxed">Barsana's iconic celebration where women playfully beat men with decorated lathis (sticks) and men protect themselves with shields. Based on legend of Krishna teasing Radha's friends.</p>
+      </div>
+      <div class="glass-card p-6" style="border-top:3px solid var(--blue);">
+        <div class="text-4xl mb-3">🕊️</div>
+        <h4 class="font-bold text-cyan-400 text-lg mb-2">Widow Holi — Vrindavan</h4>
+        <p class="text-white/70 text-sm leading-relaxed">For decades, widows in Vrindavan were denied participation in Holi. A beautiful movement now allows widows to celebrate joyously with flower petals and colors — reclaiming their right to happiness.</p>
+      </div>
+      <div class="glass-card p-6" style="border-top:3px solid var(--green);">
+        <div class="text-4xl mb-3">🌸</div>
+        <h4 class="font-bold mb-2" style="color:var(--green);">Phoolon ki Holi</h4>
+        <p class="text-white/70 text-sm leading-relaxed">The divine "Festival of Flowers" celebrated at Vrindavan's Banke Bihari temple. Priests shower devotees with thousands of fragrant flower petals — marigolds, roses, jasmine — in a breathtaking floral spectacle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     7. BHANG SECTION
+══════════════════════════════════════════ -->
+<section class="py-20 px-4 gradient-bg-anim fade-in">
+  <div class="max-w-4xl mx-auto">
+    <div class="glass-card p-8 md:p-12" style="border:1px solid rgba(157,78,221,0.4);">
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="text-7xl">🌿</div>
+        <div>
+          <h2 class="section-heading text-3xl md:text-4xl font-bold mb-4">Bhang — The Cultural Drink</h2>
+          <p class="text-white/75 leading-relaxed mb-6">Bhang is a traditional drink made from the leaves and buds of the cannabis plant, consumed in India during Holi and Maha Shivratri. It holds deep cultural and religious significance, often associated with Lord Shiva, who is said to have considered it a sacred herb.</p>
+
+          <h4 class="font-bold text-purple-400 mb-3">🥛 Traditional Bhang Thandai (Cultural Recipe)</h4>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Milk</div>
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Rose water</div>
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Almonds & cardamom</div>
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Saffron & pepper</div>
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Fennel seeds</div>
+            <div class="text-sm text-white/60 flex items-center gap-2"><span class="text-purple-400">•</span> Sugar & ice</div>
+          </div>
+
+          <p class="text-white/70 text-sm leading-relaxed mb-4">In Varanasi and Rajasthan, bhang is legally sold in government shops during festivals. The thandai (spiced milk drink) is widely consumed and shared among communities as a festive tradition going back thousands of years.</p>
+
+          <div class="mt-4 p-4 rounded-xl" style="background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.3);">
+            <p class="text-yellow-400 text-sm font-semibold">⚠️ Disclaimer: This section is for cultural and educational information only. Bhang is regulated in India and illegal in many countries. Please follow your local laws.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     8. COUNTDOWN TIMER
+══════════════════════════════════════════ -->
+<section id="countdown" class="py-24 px-4" style="background:linear-gradient(135deg,#0d0020,#001030,#0d0020);">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="fade-in mb-12">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">⏳ Countdown to Holi</h2>
+      <p class="text-white/60 text-lg" id="holiDateDisplay">Loading Holi date...</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 fade-in mb-12">
+      <!-- Days -->
+      <div class="glass-card p-6 text-center relative overflow-hidden" style="border:1px solid rgba(255,46,99,0.4);">
+        <svg class="countdown-ring w-24 h-24 mx-auto mb-4" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,46,99,0.2)" stroke-width="6"/>
+          <circle id="dayRing" cx="50" cy="50" r="42" fill="none" stroke="var(--pink)" stroke-width="6"
+            stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="days" class="text-4xl font-black text-pink-400" style="font-family:'Yatra One',cursive">00</span>
+          <span class="text-xs text-white/50 mt-1">DAYS</span>
+        </div>
+      </div>
+      <!-- Hours -->
+      <div class="glass-card p-6 text-center relative overflow-hidden" style="border:1px solid rgba(249,237,105,0.4);">
+        <svg class="countdown-ring w-24 h-24 mx-auto mb-4" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(249,237,105,0.2)" stroke-width="6"/>
+          <circle id="hourRing" cx="50" cy="50" r="42" fill="none" stroke="var(--yellow)" stroke-width="6"
+            stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="hours" class="text-4xl font-black text-yellow-300" style="font-family:'Yatra One',cursive">00</span>
+          <span class="text-xs text-white/50 mt-1">HOURS</span>
+        </div>
+      </div>
+      <!-- Minutes -->
+      <div class="glass-card p-6 text-center relative overflow-hidden" style="border:1px solid rgba(0,187,249,0.4);">
+        <svg class="countdown-ring w-24 h-24 mx-auto mb-4" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(0,187,249,0.2)" stroke-width="6"/>
+          <circle id="minuteRing" cx="50" cy="50" r="42" fill="none" stroke="var(--blue)" stroke-width="6"
+            stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="minutes" class="text-4xl font-black text-cyan-400" style="font-family:'Yatra One',cursive">00</span>
+          <span class="text-xs text-white/50 mt-1">MINUTES</span>
+        </div>
+      </div>
+      <!-- Seconds -->
+      <div class="glass-card p-6 text-center relative overflow-hidden" style="border:1px solid rgba(157,78,221,0.4);">
+        <svg class="countdown-ring w-24 h-24 mx-auto mb-4" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(157,78,221,0.2)" stroke-width="6"/>
+          <circle id="secondRing" cx="50" cy="50" r="42" fill="none" stroke="var(--purple)" stroke-width="6"
+            stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="seconds" class="text-4xl font-black text-purple-400" style="font-family:'Yatra One',cursive">00</span>
+          <span class="text-xs text-white/50 mt-1">SECONDS</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="holiMessage" class="glass-card p-6 fade-in" style="border:1px solid rgba(255,46,99,0.3);">
+      <p class="text-2xl font-bold text-pink-400" style="font-family:'Yatra One',cursive">🎊 Get Ready to Play Colors!</p>
+      <p class="text-white/60 mt-2">Stock up on herbal colors, fill the pichkaris, and prepare for the most colorful day of the year!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     9. MINI GAME SECTION 🎮
+══════════════════════════════════════════ -->
+<section id="games" class="py-24 px-4 gradient-bg-anim">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">🎮 Holi Mini Games</h2>
+      <p class="text-white/60 text-lg">Play these fun colorful games!</p>
+    </div>
+
+    <!-- Game Tabs -->
+    <div class="flex gap-3 justify-center mb-8 flex-wrap fade-in">
+      <button onclick="switchGame('balloon')" id="tab-balloon" class="game-tab active px-6 py-3 rounded-full font-semibold text-white/70 border border-white/20 hover:border-white/40 transition-all">🎈 Balloon Pop</button>
+      <button onclick="switchGame('color-guess')" id="tab-color-guess" class="game-tab px-6 py-3 rounded-full font-semibold text-white/70 border border-white/20 hover:border-white/40 transition-all">🎨 Guess the Color</button>
+      <button onclick="switchGame('spin-wheel')" id="tab-spin-wheel" class="game-tab px-6 py-3 rounded-full font-semibold text-white/70 border border-white/20 hover:border-white/40 transition-all">🎡 Spin the Wheel</button>
+    </div>
+
+    <!-- Game Area -->
+    <div class="glass-card overflow-hidden fade-in" style="min-height:400px;">
+
+      <!-- BALLOON GAME -->
+      <div id="game-balloon" class="relative" style="height:450px;">
+        <div class="absolute inset-0 flex items-start justify-between p-4">
+          <div class="glass-card px-4 py-2">
+            <span class="text-white/70 text-sm">Score: </span>
+            <span id="balloonScore" class="text-yellow-300 font-bold text-lg">0</span>
+          </div>
+          <div class="glass-card px-4 py-2">
+            <span class="text-white/70 text-sm">Time: </span>
+            <span id="balloonTime" class="text-pink-400 font-bold text-lg">30</span>s
+          </div>
+        </div>
+        <div id="balloonContainer" class="absolute inset-0"></div>
+        <div id="balloonGameOver" class="absolute inset-0 hidden flex-col items-center justify-center text-center p-8"
+          style="background:rgba(0,0,0,0.8);">
+          <div class="text-6xl mb-4">🎊</div>
+          <h3 class="text-3xl font-bold text-yellow-300 mb-2" style="font-family:'Yatra One',cursive">Time's Up!</h3>
+          <p class="text-white/70 mb-6">You popped <span id="finalBalloonScore" class="text-pink-400 font-bold"></span> balloons!</p>
+          <button onclick="startBalloonGame()" class="px-8 py-3 rounded-full font-bold text-white pulse-btn"
+            style="background:linear-gradient(135deg,var(--pink),var(--purple));">Play Again</button>
+        </div>
+        <div id="balloonStart" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+          <div class="text-6xl mb-4 animate-bounce">🎈</div>
+          <h3 class="text-2xl font-bold text-white mb-4">Pop the Flying Balloons!</h3>
+          <p class="text-white/60 mb-6">Click the floating color balloons as fast as you can. 30 seconds on the clock!</p>
+          <button onclick="startBalloonGame()" class="px-8 py-3 rounded-full font-bold text-white"
+            style="background:linear-gradient(135deg,var(--pink),var(--orange));">🎈 Start Game!</button>
+        </div>
+      </div>
+
+      <!-- COLOR GUESS GAME -->
+      <div id="game-color-guess" class="hidden p-8 flex flex-col items-center text-center" style="min-height:450px;">
+        <h3 class="text-2xl font-bold text-white mb-2">🎨 Guess the Color!</h3>
+        <p class="text-white/60 mb-8">Can you identify this Holi color? Pick the right one!</p>
+        <div id="colorBox" class="w-40 h-40 rounded-full mb-8 transition-all duration-500" style="box-shadow:0 0 60px currentColor;"></div>
+        <div id="colorOptions" class="grid grid-cols-2 gap-4 w-full max-w-md mb-6"></div>
+        <div id="colorResult" class="text-xl font-bold mt-2 min-h-8"></div>
+        <div class="flex gap-6 mt-4">
+          <div class="text-center"><p class="text-2xl font-bold text-green-400" id="colorCorrect">0</p><p class="text-white/50 text-sm">Correct</p></div>
+          <div class="text-center"><p class="text-2xl font-bold text-pink-400" id="colorWrong">0</p><p class="text-white/50 text-sm">Wrong</p></div>
+        </div>
+      </div>
+
+      <!-- SPIN WHEEL GAME -->
+      <div id="game-spin-wheel" class="hidden p-8 flex flex-col items-center text-center" style="min-height:450px;">
+        <h3 class="text-2xl font-bold text-white mb-2">🎡 Spin the Color Wheel!</h3>
+        <p class="text-white/60 mb-8">Spin to discover your Holi color of the day!</p>
+        <div class="relative mb-8">
+          <canvas id="colorWheel" width="260" height="260" class="rounded-full" style="cursor:pointer;"></canvas>
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-3 text-3xl" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))">▼</div>
+        </div>
+        <button id="spinBtn" onclick="spinColorWheel()" class="px-10 py-4 rounded-full font-bold text-white text-lg pulse-btn"
+          style="background:linear-gradient(135deg,var(--purple),var(--blue));">🎡 Spin!</button>
+        <div id="spinResult" class="mt-6 text-xl font-bold min-h-8"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     10. CLICK TO WISH HOLI 🎊
+══════════════════════════════════════════ -->
+<section id="wish" class="py-24 px-4 relative transition-all" id="wishBg" style="background:linear-gradient(135deg,#1a0033,#001a33);">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="fade-in mb-12">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">🎊 Spread Colors of Joy</h2>
+      <p class="text-white/60 text-lg">Click the button to send Holi wishes to the universe!</p>
+    </div>
+
+    <div class="glass-card p-10 md:p-16 fade-in" style="border:2px solid rgba(255,46,99,0.3);">
+      <div id="wishDisplay" class="min-h-32 flex items-center justify-center mb-8">
+        <p class="text-2xl md:text-3xl text-white/80 leading-relaxed font-light" style="font-family:'Dancing Script',cursive;">Click below to receive your Holi wish! 🌈</p>
+      </div>
+
+      <button id="wishBtn" onclick="sendHoliWish()" class="pulse-btn px-12 py-5 rounded-full font-bold text-white text-xl relative overflow-hidden group"
+        style="background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));box-shadow:0 0 40px rgba(255,46,99,0.4);">
+        <span class="relative z-10">🎨 Click to Spread Colors!</span>
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style="background:white"></div>
+      </button>
+
+      <div class="mt-6 flex justify-center gap-8 text-center">
+        <div>
+          <p id="wishCount" class="text-3xl font-black text-pink-400" style="font-family:'Yatra One',cursive">0</p>
+          <p class="text-white/50 text-sm">Wishes Sent</p>
+        </div>
+        <div>
+          <p id="wishStreak" class="text-3xl font-black text-yellow-300" style="font-family:'Yatra One',cursive">🎉</p>
+          <p class="text-white/50 text-sm">Keep Clicking!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     11. USER'S HOLI MOMENTS GALLERY
+══════════════════════════════════════════ -->
+<section id="gallery" class="py-24 px-4" style="background:linear-gradient(180deg,#001020,#0a0010,#001020);">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12 fade-in">
+      <h2 class="section-heading text-4xl md:text-6xl font-bold mb-4">📸 Holi Moments</h2>
+      <p class="text-white/60 text-lg">Crazy, colorful memories from the festival!</p>
+    </div>
+
+    <!-- Upload Button (UI only) -->
+    <div class="text-center mb-10 fade-in">
+      <label class="cursor-pointer px-8 py-4 rounded-full font-bold text-white text-lg inline-flex items-center gap-3"
+        style="background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 0 30px rgba(0,187,249,0.3);">
+        <span>📤 Share Your Holi Moment</span>
+        <input type="file" class="hidden" accept="image/*" onchange="handlePhotoUpload(event)"/>
+      </label>
+      <p class="text-white/40 text-sm mt-2">Upload your best Holi photos!</p>
+    </div>
+
+    <!-- Masonry Gallery -->
+    <div class="masonry fade-in" id="galleryGrid">
+      <!-- Gallery items with gradient placeholders -->
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:180px;background:linear-gradient(135deg,#ff2e63,#f9ed69);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">🎨</span>
+            <p class="font-bold text-lg">Color Wars 2024</p>
+            <p class="text-sm opacity-75">Mumbai, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 234 Loves</span>
+        </div>
+      </div>
+
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:240px;background:linear-gradient(135deg,#9d4edd,#00bbf9);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">🌊</span>
+            <p class="font-bold text-lg">Water Balloon Fight!</p>
+            <p class="text-sm opacity-75">Delhi, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 567 Loves</span>
+        </div>
+      </div>
+
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:200px;background:linear-gradient(135deg,#38b000,#f9ed69);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">🌿</span>
+            <p class="font-bold text-lg">Organic Holi</p>
+            <p class="text-sm opacity-75">Jaipur, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 189 Loves</span>
+        </div>
+      </div>
+
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:220px;background:linear-gradient(135deg,#fb5607,#ff2e63);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">🔥</span>
+            <p class="font-bold text-lg">Holika Dahan Night</p>
+            <p class="text-sm opacity-75">Varanasi, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 891 Loves</span>
+        </div>
+      </div>
+
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:160px;background:linear-gradient(135deg,#00bbf9,#9d4edd);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">💫</span>
+            <p class="font-bold text-lg">Phoolon ki Holi</p>
+            <p class="text-sm opacity-75">Vrindavan, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 1.2K Loves</span>
+        </div>
+      </div>
+
+      <div class="masonry-item cursor-pointer group relative">
+        <div class="w-full rounded-xl overflow-hidden" style="height:260px;background:linear-gradient(135deg,#f9ed69,#38b000);">
+          <div class="w-full h-full flex flex-col items-center justify-center text-white p-4 text-center">
+            <span class="text-5xl mb-2">🎭</span>
+            <p class="font-bold text-lg">Lathmar Holi Magic</p>
+            <p class="text-sm opacity-75">Barsana, India</p>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold">❤️ 2.1K Loves</span>
+        </div>
+      </div>
+    </div>
+
+    
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="py-12 px-4 text-center" style="background:linear-gradient(135deg,#0a0010,#000a10);">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-5xl mb-4 animate-bounce inline-block">🎨</div>
+    <h3 style="font-family:'Yatra One',cursive" class="text-2xl bg-gradient-to-r from-pink-400 via-yellow-300 to-cyan-400 bg-clip-text text-transparent mb-3">Rangotsav — The Festival of Colors</h3>
+    <p class="text-white/40 text-sm leading-relaxed max-w-xl mx-auto mb-8">
+      May every color in your life be bright and beautiful. May every moment be filled with the joy of Holi. 
+      <br>बुरा न मानो, होली है! 🌈
+    </p>
+    <div class="flex justify-center gap-6 flex-wrap text-white/40 text-sm">
+      <a href="#hero" class="hover:text-pink-400 transition-colors">Home</a>
+      <a href="#about" class="hover:text-yellow-300 transition-colors">About</a>
+      <a href="#facts" class="hover:text-cyan-400 transition-colors">Facts</a>
+      <a href="#games" class="hover:text-purple-400 transition-colors">Games</a>
+      <a href="#wish" class="hover:text-pink-400 transition-colors">Wish</a>
+    </div>
+    <div class="mt-8 h-px w-full max-w-md mx-auto" style="background:linear-gradient(90deg,transparent,rgba(255,46,99,0.5),transparent)"></div>
+    <p class="text-white/20 text-xs mt-4">Made with 💖 and infinite colors • Rangotsav 2026</p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+// ── CUSTOM CURSOR ────────────────────────────────────────────────────────────
+const cursor = document.getElementById('custom-cursor');
+const CURSOR_COLORS = ['#ff2e63','#f9ed69','#00bbf9','#9d4edd','#38b000','#fb5607'];
+
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+
+// Cursor trail particles on every mouse move
+let lastTrailTime = 0;
+document.addEventListener('mousemove', e => {
+  const now = Date.now();
+  if (now - lastTrailTime < 40) return;
+  lastTrailTime = now;
+  spawnCursorParticle(e.clientX, e.clientY, 6 + Math.random() * 6);
+});
+
+// Click splash
+document.addEventListener('click', e => {
+  // Large splash
+  const dot = document.createElement('div');
+  dot.className = 'splash-dot';
+  const color = CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)];
+  const size = 40 + Math.random() * 60;
+  dot.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX}px;top:${e.clientY}px;background:${color};opacity:0.7;`;
+  document.body.appendChild(dot);
+  setTimeout(() => dot.remove(), 700);
+
+  // Burst particles
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      spawnCursorParticle(
+        e.clientX + (Math.random()-0.5)*40,
+        e.clientY + (Math.random()-0.5)*40,
+        4 + Math.random() * 8
+      );
+    }, i * 30);
+  }
+});
+
+function spawnCursorParticle(x, y, size) {
+  const p = document.createElement('div');
+  p.className = 'cursor-particle';
+  const color = CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)];
+  const dx = (Math.random() - 0.5) * 60;
+  const dy = (Math.random() - 0.5) * 60;
+  p.style.cssText = `
+    width:${size}px;height:${size}px;
+    left:${x}px;top:${y}px;
+    background:${color};
+    --dx:${dx}px;--dy:${dy}px;
+    opacity:0.8;
+  `;
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 800);
+}
+
+// ── FLOATING BACKGROUND PARTICLES ───────────────────────────────────────────
+(function createParticles() {
+  const container = document.getElementById('particles-container');
+  const colors = ['#ff2e63','#f9ed69','#00bbf9','#9d4edd','#38b000','#fb5607','#ff69b4','#7fff00'];
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 4 + Math.random() * 12;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left  = Math.random() * 100;
+    const duration = 8 + Math.random() * 20;
+    const delay  = Math.random() * 15;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      background:${color};
+      left:${left}vw;
+      animation-duration:${duration}s;
+      animation-delay:-${delay}s;
+      box-shadow: 0 0 ${size*2}px ${color};
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ── NAVBAR SCROLL ────────────────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Mobile menu
+document.getElementById('menuBtn').addEventListener('click', () => {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('open');
+});
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+// ── FADE IN ON SCROLL ────────────────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── HERO COLOR BURST ─────────────────────────────────────────────────────────
+function triggerColorBurst(e) {
+  const burst = document.getElementById('colorBurst');
+  burst.innerHTML = '';
+  burst.style.display = 'block';
+  const colors = ['#ff2e63','#f9ed69','#00bbf9','#9d4edd','#38b000','#fb5607'];
+  const rect = e.target.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  colors.forEach((color, i) => {
+    const c = document.createElement('div');
+    c.className = 'burst-circle';
+    c.style.cssText = `
+      width:60px;height:60px;
+      background:${color};
+      left:${cx - 30}px;top:${cy - 30}px;
+      animation-delay:${i * 0.08}s;
+      opacity:0.35;
+    `;
+    burst.appendChild(c);
+  });
+  launchConfetti(80);
+  setTimeout(() => { burst.style.display = 'none'; burst.innerHTML = ''; }, 2000);
+}
+
+// ── COUNTDOWN TIMER ───────────────────────────────────────────────────────────
+function getNextHoli() {
+  const now = new Date();
+  const year = now.getFullYear();
+  // Holi 2026: March 13; 2027: March 2 (approximate)
+  const holiDates = {
+    2026: new Date('2026-03-04T06:00:00'),
+    2027: new Date('2027-03-02T06:00:00'),
+  };
+  for (const [y, d] of Object.entries(holiDates)) {
+    if (d > now) return d;
+  }
+  return new Date((year + 1) + '-03-10T06:00:00');
+}
+
+function updateCountdown() {
+  const target = getNextHoli();
+  const now    = new Date();
+  const diff   = target - now;
+
+  if (diff <= 0) {
+    document.getElementById('holiMessage').innerHTML = '<p class="text-3xl font-bold text-yellow-400" style="font-family:\'Yatra One\',cursive">🎊 Happy Holi! आज होली है! 🎊</p>';
+    return;
+  }
+
+  const totalDays    = Math.floor(diff / 86400000);
+  const totalHours   = Math.floor((diff % 86400000) / 3600000);
+  const totalMinutes = Math.floor((diff % 3600000) / 60000);
+  const totalSeconds = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById('days').textContent    = String(totalDays).padStart(2,'0');
+  document.getElementById('hours').textContent   = String(totalHours).padStart(2,'0');
+  document.getElementById('minutes').textContent = String(totalMinutes).padStart(2,'0');
+  document.getElementById('seconds').textContent = String(totalSeconds).padStart(2,'0');
+  document.getElementById('holiDateDisplay').textContent = `Next Holi: ${target.toDateString()}`;
+
+  // Ring offsets
+  const circum = 264;
+  const maxDays = 365;
+  document.getElementById('dayRing').style.strokeDashoffset    = circum - (totalDays / maxDays) * circum;
+  document.getElementById('hourRing').style.strokeDashoffset   = circum - (totalHours / 24) * circum;
+  document.getElementById('minuteRing').style.strokeDashoffset = circum - (totalMinutes / 60) * circum;
+  document.getElementById('secondRing').style.strokeDashoffset = circum - (totalSeconds / 60) * circum;
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── BALLOON GAME ──────────────────────────────────────────────────────────────
+let balloonScore = 0, balloonTimer = null, balloonInterval = null, balloonCountdown = 30;
+
+function startBalloonGame() {
+  document.getElementById('balloonStart').style.display = 'none';
+  document.getElementById('balloonGameOver').style.display = 'none';
+  balloonScore = 0;
+  balloonCountdown = 30;
+  document.getElementById('balloonScore').textContent = 0;
+  document.getElementById('balloonTime').textContent = 30;
+  document.getElementById('balloonContainer').innerHTML = '';
+
+  if (balloonTimer) clearInterval(balloonTimer);
+  if (balloonInterval) clearInterval(balloonInterval);
+
+  balloonInterval = setInterval(spawnBalloon, 700);
+  balloonTimer = setInterval(() => {
+    balloonCountdown--;
+    document.getElementById('balloonTime').textContent = balloonCountdown;
+    if (balloonCountdown <= 0) {
+      clearInterval(balloonTimer);
+      clearInterval(balloonInterval);
+      document.getElementById('balloonContainer').innerHTML = '';
+      document.getElementById('finalBalloonScore').textContent = balloonScore;
+      document.getElementById('balloonGameOver').style.display = 'flex';
+    }
+  }, 1000);
+}
+
+const balloonColors = ['#ff2e63','#f9ed69','#00bbf9','#9d4edd','#38b000','#fb5607','#ff69b4'];
+const balloonEmojis = ['🎈','💛','💙','💜','💚','🧡','💗'];
+
+function spawnBalloon() {
+  const container = document.getElementById('balloonContainer');
+  const b = document.createElement('div');
+  b.className = 'balloon';
+  const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+  const emoji = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+  const size = 50 + Math.random() * 40;
+  const left = 5 + Math.random() * 80;
+  const dur  = 3 + Math.random() * 4;
+  b.style.cssText = `
+    width:${size}px;height:${size * 1.2}px;
+    left:${left}%;
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4), ${color});
+    animation-duration:${dur}s;
+  `;
+  b.textContent = emoji;
+  b.addEventListener('click', function(e) {
+    e.stopPropagation();
+    balloonScore++;
+    document.getElementById('balloonScore').textContent = balloonScore;
+    // Pop effect
+    const pop = document.createElement('div');
+    pop.className = 'balloon-pop';
+    pop.textContent = '💥';
+    pop.style.cssText = `left:${this.style.left};bottom:${parseInt(this.style.bottom)}px;`;
+    container.appendChild(pop);
+    spawnCursorParticle(e.clientX, e.clientY, 20);
+    setTimeout(() => pop.remove(), 500);
+    this.remove();
+  });
+  container.appendChild(b);
+  setTimeout(() => b.remove(), dur * 1000);
+}
+
+// ── COLOR GUESS GAME ──────────────────────────────────────────────────────────
+const colorGuessData = [
+  { name: 'Pink — Love', color: '#ff2e63' },
+  { name: 'Yellow — Joy', color: '#f9ed69' },
+  { name: 'Blue — Peace', color: '#00bbf9' },
+  { name: 'Purple — Magic', color: '#9d4edd' },
+  { name: 'Green — Life', color: '#38b000' },
+  { name: 'Orange — Energy', color: '#fb5607' },
+  { name: 'Red — Passion', color: '#cc0000' },
+  { name: 'Cyan — Calm', color: '#00d4d4' },
+];
+let colorCorrect = 0, colorWrong = 0;
+
+function initColorGame() {
+  const idx     = Math.floor(Math.random() * colorGuessData.length);
+  const correct = colorGuessData[idx];
+  const others  = colorGuessData.filter((_,i) => i !== idx).sort(() => Math.random()-0.5).slice(0,3);
+  const options = [correct, ...others].sort(() => Math.random()-0.5);
+
+  document.getElementById('colorBox').style.background = correct.color;
+  document.getElementById('colorBox').style.boxShadow  = `0 0 60px ${correct.color}`;
+  document.getElementById('colorResult').textContent   = '';
+
+  const optDiv = document.getElementById('colorOptions');
+  optDiv.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'glass-card px-4 py-3 rounded-xl font-semibold text-white/80 hover:text-white text-sm transition-all hover:scale-105';
+    btn.textContent = opt.name;
+    btn.addEventListener('click', () => {
+      const res = document.getElementById('colorResult');
+      if (opt.name === correct.name) {
+        colorCorrect++;
+        res.textContent = '✅ Correct! You know your colors!';
+        res.style.color = '#38b000';
+        btn.style.background = 'rgba(56,176,0,0.3)';
+      } else {
+        colorWrong++;
+        res.textContent = `❌ It was ${correct.name}! Try again!`;
+        res.style.color = '#ff2e63';
+        btn.style.background = 'rgba(255,46,99,0.3)';
+      }
+      document.getElementById('colorCorrect').textContent = colorCorrect;
+      document.getElementById('colorWrong').textContent   = colorWrong;
+      setTimeout(initColorGame, 1200);
+    });
+    optDiv.appendChild(btn);
+  });
+}
+
+// ── COLOR WHEEL GAME ──────────────────────────────────────────────────────────
+const wheelSegments = [
+  { color: '#ff2e63', label: 'Pink' },
+  { color: '#f9ed69', label: 'Yellow' },
+  { color: '#00bbf9', label: 'Blue' },
+  { color: '#9d4edd', label: 'Purple' },
+  { color: '#38b000', label: 'Green' },
+  { color: '#fb5607', label: 'Orange' },
+  { color: '#cc3399', label: 'Magenta' },
+  { color: '#00d4d4', label: 'Cyan' },
+];
+const wheelMessages = {
+  Pink:    '💗 Pink means LOVE! Spread love everywhere today!',
+  Yellow:  '💛 Yellow means JOY! Today is your bright day!',
+  Blue:    '💙 Blue means PEACE! Calm your mind, spread harmony!',
+  Purple:  '💜 Purple means MAGIC! Something magical awaits you!',
+  Green:   '💚 Green means GROWTH! New beginnings are near!',
+  Orange:  '🧡 Orange means ENERGY! Full of life and excitement!',
+  Magenta: '💖 Magenta means PASSION! Follow your heart today!',
+  Cyan:    '🩵 Cyan means CALM! Flowing like a peaceful river!',
+};
+
+let isSpinning = false;
+let currentAngle = 0;
+
+function drawWheel() {
+  const canvas = document.getElementById('colorWheel');
+  if (!canvas) return;
+  const ctx  = canvas.getContext('2d');
+  const cx   = canvas.width / 2;
+  const cy   = canvas.height / 2;
+  const r    = cx - 5;
+  const arc  = (2 * Math.PI) / wheelSegments.length;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate((currentAngle * Math.PI) / 180);
+
+  wheelSegments.forEach((seg, i) => {
+    const start = i * arc - Math.PI / 2;
+    const end   = start + arc;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = seg.color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    ctx.save();
+    ctx.rotate(start + arc / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Poppins, sans-serif';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur  = 4;
+    ctx.fillText(seg.label, r - 12, 5);
+    ctx.restore();
+  });
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(0, 0, 22, 0, 2 * Math.PI);
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 18px Poppins';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🎨', 0, 0);
+  ctx.restore();
+}
+
+function spinColorWheel() {
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('spinResult').textContent = '';
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('spinBtn').textContent = '⏳ Spinning...';
+
+  const extraSpins = 5 + Math.random() * 5; // 5-10 full rotations
+  const targetAngle = currentAngle + extraSpins * 360 + Math.random() * 360;
+  const duration = 3000 + Math.random() * 1000;
+  const startAngle = currentAngle;
+  const startTime = performance.now();
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animate(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    currentAngle   = startAngle + (targetAngle - startAngle) * easeOut(progress);
+    drawWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      currentAngle = targetAngle % 360;
+      drawWheel();
+      isSpinning = false;
+      document.getElementById('spinBtn').disabled = false;
+      document.getElementById('spinBtn').textContent = '🎡 Spin Again!';
+
+      // Which segment is at the top (270deg = pointing up, but pointer is at top so 90deg offset)
+      const normalizedAngle = ((currentAngle % 360) + 360) % 360;
+      const arc = 360 / wheelSegments.length;
+      const pointerAngle = (90 - normalizedAngle + 360) % 360;
+      const segIdx = Math.floor(pointerAngle / arc) % wheelSegments.length;
+      const landed = wheelSegments[segIdx];
+
+      document.getElementById('spinResult').innerHTML =
+        `<span style="color:${landed.color};font-size:1.3rem;">${wheelMessages[landed.label]}</span>`;
+      launchConfetti(30);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// ── GAME TAB SWITCHING ────────────────────────────────────────────────────────
+function switchGame(name) {
+  ['balloon','color-guess','spin-wheel'].forEach(g => {
+    document.getElementById('game-' + g).classList.add('hidden');
+    document.getElementById('tab-' + g).classList.remove('active');
+  });
+  document.getElementById('game-' + name).classList.remove('hidden');
+  document.getElementById('tab-' + name).classList.add('active');
+
+  if (name === 'color-guess') initColorGame();
+  if (name === 'spin-wheel')  drawWheel();
+}
+
+// ── CLICK TO WISH ─────────────────────────────────────────────────────────────
+const holiWishes = [
+  "रंगों से भरी हो जिंदगी तुम्हारी, खुशियां बरसें हर दिन तुम्हारे द्वार पर! 🌈 Happy Holi!",
+  "May the colors of Holi fill your life with happiness, health, and harmony. Wishing you a glorious Holi! 🎊",
+  "Bura na mano, Holi hai! May this festival of colors paint your world with joy and laughter! 🎨",
+  "होली की हार्दिक शुभकामनाएं! May Lord Krishna's love and Radha's blessings be with you always! 💕🌸",
+  "जब रंग उड़ाते हो, दिल खिल जाता है। May this Holi bring colors of love into your life! 💛💙",
+  "Wishing you a colorful, joyful, and wonderful Holi! May your heart always be as vibrant as the festival! 🎉",
+  "होली आई, रंग लाई, खुशियां ढेर सारी साथ लाई! A very Happy Holi to you and your family! 🏠💗",
+  "May the spirit of Holi wash away your sorrows and paint your tomorrow with the brightest colors! ✨🎨",
+  "Sending you a rainbow of warm smiles, a bucket of happy moments, and lots of Holi love! 🌈💝",
+  "रंगों का त्योहार है, खुशियों की बहार है! May this Holi be the best one yet! 🌺🎊",
+];
+const wishBgGradients = [
+  'linear-gradient(135deg,#1a0033,#330010)',
+  'linear-gradient(135deg,#1a1000,#003300)',
+  'linear-gradient(135deg,#001a33,#000a2a)',
+  'linear-gradient(135deg,#33001a,#1a0033)',
+  'linear-gradient(135deg,#002000,#001a20)',
+];
+let wishCount = 0;
+
+function sendHoliWish() {
+  wishCount++;
+  document.getElementById('wishCount').textContent = wishCount;
+
+  const wish = holiWishes[Math.floor(Math.random() * holiWishes.length)];
+  const wishDiv = document.getElementById('wishDisplay');
+  wishDiv.innerHTML = `<p class="text-xl md:text-2xl text-white/90 leading-relaxed" style="font-family:'Dancing Script',cursive;animation:fadeIn 0.5s ease;">${wish}</p>`;
+
+  document.getElementById('wish').style.background = wishBgGradients[Math.floor(Math.random() * wishBgGradients.length)];
+
+  // Star streak
+  const streakEmojis = ['🎊','🌈','🎉','✨','💫','🌸','🎨','💝'];
+  document.getElementById('wishStreak').textContent = streakEmojis[Math.floor(Math.random() * streakEmojis.length)];
+
+  launchConfetti(50);
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+function launchConfetti(count) {
+  const colors = ['#ff2e63','#f9ed69','#00bbf9','#9d4edd','#38b000','#fb5607','#fff'];
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      const color    = colors[Math.floor(Math.random() * colors.length)];
+      const left     = Math.random() * 100;
+      const duration = 1.5 + Math.random() * 2;
+      const drift    = (Math.random() - 0.5) * 200 + 'px';
+      const borderR  = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.cssText = `
+        left:${left}vw;
+        background:${color};
+        --fall-duration:${duration}s;
+        --drift:${drift};
+        --border-r:${borderR};
+        transform:rotate(${Math.random()*360}deg);
+      `;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), duration * 1000 + 200);
+    }, i * 30);
+  }
+}
+
+// ── PHOTO UPLOAD (UI) ─────────────────────────────────────────────────────────
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const grid = document.getElementById('galleryGrid');
+    const item = document.createElement('div');
+    item.className = 'masonry-item cursor-pointer group relative';
+    item.innerHTML = `
+      <div class="w-full rounded-xl overflow-hidden" style="max-height:280px;">
+        <img src="${e.target.result}" class="w-full object-cover transition-transform duration-300 group-hover:scale-110" alt="My Holi Moment"/>
+      </div>
+      <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+        <span class="text-white font-bold">❤️ Your Moment!</span>
+      </div>
+    `;
+    grid.insertBefore(item, grid.firstChild);
+    launchConfetti(30);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Small CSS for wish fade
+  const style = document.createElement('style');
+  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(style);
+});
+
+// Draw wheel when tab opens
+document.getElementById('tab-spin-wheel').addEventListener('click', () => {
+  setTimeout(drawWheel, 100);
+});
+</script>
+</body>
+</html>
